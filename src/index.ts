@@ -1,3 +1,6 @@
+// @ts-ignore
+import indexHtml from "./public/index.html";
+
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
  *
@@ -36,7 +39,10 @@ const worker: ExportedHandler<Env> = {
 			return durableObjectStub.fetch(request);
 		}
 
-		return new Response(url.toString());
+		// return static HTML
+		return new Response(indexHtml, {
+			headers: { 'content-type': 'text/html' },
+		});
 	}
 };
 
