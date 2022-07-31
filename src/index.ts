@@ -17,14 +17,27 @@ export interface Env {
 	//
 	// Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
 	// MY_BUCKET: R2Bucket;
+
+	DURABLE_OBJECT_WEBSOCKET: DurableObjectNamespace;
 }
 
-export default {
+const worker: ExportedHandler<Env> = {
 	async fetch(
 		request: Request,
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		return new Response("Hello World!");
-	},
+		const url = new URL(request.url);
+
+		if (request.headers.get("upgrade") === "websocket") {
+			const durableObjectId = env.DURABLE_OBJECT_WEBSOCKET.idFromName(url.pathname);
+			const durableObjectStub = env.DURABLE_OBJECT_WEBSOCKET.get(durableObjectId);
+
+			return durableObjectStub.fetch(request);
+		}
+
+		return new Response(url.toString());
+	}
 };
+
+export default worker;
