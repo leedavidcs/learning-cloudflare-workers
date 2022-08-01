@@ -1,4 +1,4 @@
-import { RateLimiterClient } from "../classes";
+import { RateLimiterClient } from "../classes/RateLimiterClient.class";
 import { RequestUtils, WebSocketUtils } from "../utils";
 
 const HISTORICAL_MESSAGES_LIMIT = 100;
