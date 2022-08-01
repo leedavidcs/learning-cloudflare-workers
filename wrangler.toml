@@ -1,3 +1,16 @@
 name = "learning-cloudflare-workers"
 main = "src/index.ts"
 compatibility_date = "2022-07-24"
+
+compatibility_flags = ["durable_object_alarms"]
+
+[durable_objects]
+bindings = [
+	{ name = "limiters", class_name = "RateLimiterDurableObject" },
+	{ name = "rooms", class_name = "ChatRoomDurableObject" },
+]
+
+[[rules]]
+type = "Data"
+globs = ["**/*.html"]
+fallthrough = false

@@ -1,6 +1,8 @@
 // @ts-ignore
 import indexHtml from "./public/index.html";
 
+export { ChatRoomDurableObject, RateLimiterDurableObject } from "./durable-objects";
+
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
  *
@@ -11,19 +13,6 @@ import indexHtml from "./public/index.html";
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export interface Env {
-	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	// MY_KV_NAMESPACE: KVNamespace;
-	//
-	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
-	// MY_DURABLE_OBJECT: DurableObjectNamespace;
-	//
-	// Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
-	// MY_BUCKET: R2Bucket;
-
-	DURABLE_OBJECT_WEBSOCKET: DurableObjectNamespace;
-}
-
 const worker: ExportedHandler<Env> = {
 	async fetch(
 		request: Request,
@@ -31,18 +20,17 @@ const worker: ExportedHandler<Env> = {
 		ctx: ExecutionContext
 	): Promise<Response> {
 		const url = new URL(request.url);
+		const path = url.pathname.slice(1).split("/");
 
-		if (request.headers.get("upgrade") === "websocket") {
-			const durableObjectId = env.DURABLE_OBJECT_WEBSOCKET.idFromName(url.pathname);
-			const durableObjectStub = env.DURABLE_OBJECT_WEBSOCKET.get(durableObjectId);
-
-			return durableObjectStub.fetch(request);
+		if (!path[0]) {
+			// return static HTML
+			return new Response(indexHtml, {
+				headers: { "content-type": "text/html;charset=UTF-8" },
+			});
 		}
 
 		// return static HTML
-		return new Response(indexHtml, {
-			headers: { 'content-type': 'text/html' },
-		});
+		return new Response("Not found", { status: 404 });
 	}
 };
 
