@@ -1,2 +1,2 @@
-export * from "./Request.util";
-export * from "./WebSocket.util";
+export * from "./RequestUtils";
+export * from "./WebSocketUtils";

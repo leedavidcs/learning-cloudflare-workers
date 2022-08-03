@@ -1,1 +1,1 @@
-export * from "./RateLimiterClient.class";
+export * from "./RateLimiterClient";

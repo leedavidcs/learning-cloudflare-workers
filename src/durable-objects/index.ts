@@ -1,2 +1,2 @@
-export * from "./ChatRoom.durable-object";
-export * from "./RateLimiter.durable-object";
+export * from "./ChatRoomDurableObject";
+export * from "./RateLimiterDurableObject";
