@@ -67,6 +67,13 @@ export class RateLimiterClient {
 
 				response = await this.limiter.fetch("https://dummy-url", { method: "POST" });
 			}
+
+			let cooldown = +(await response.text());
+			await new Promise((resolve) => {
+				setTimeout(resolve, cooldown * 1_000, undefined)
+			});
+
+			this.inCooldown = false;
 		} catch (err) {
 			const error = err instanceof Error ? err : new Error("Unidentified error");
 
